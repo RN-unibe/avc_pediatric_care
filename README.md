@@ -1,10 +1,5 @@
 # Animating Virtual Children: Realistic Behaviors for VR Training in Pediatric Care
 
-## Keywords
-- VR
-- Game Development
-- Unreal Engine 5
-
 ## Context
 Managing distressed patients in clinical environments is a challenging yet critical skill for healthcare professionals. Patients exhibit diverse emotional responses—ranging from anxiety and shyness to outright resistance-making it essential for clinicians to adapt their approach. Traditional training methods often lack the realism needed to prepare professionals for these high-stakes interactions.
 
@@ -13,6 +8,11 @@ A VR solution featuring animated patient avatars with dynamic behavior can provi
 
 ## Goal
 To develop an innovative VR training solution that equips healthcare professionals with the skills needed to manage distressed patients effectively. The project will create dynamic, realistic avatars that exhibit diverse emotional responses using AI-driven behavior trees and advanced animations. The VR platform will provide a safe and interactive training environment, enhancing communication skills and clinical decision-making.
+
+## Keywords
+- VR
+- Game Development
+- Unreal Engine 5
 
 ## Pointers
 - Unreal VR plugin: https://humancodeable.com/
