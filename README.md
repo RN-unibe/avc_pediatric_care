@@ -10,5 +10,5 @@ A VR solution featuring animated patient avatars with dynamic behavior can provi
 To develop an innovative VR training solution that equips healthcare professionals with the skills needed to manage distressed patients effectively. The project will create dynamic, realistic avatars that exhibit diverse emotional responses using AI-driven behavior trees and advanced animations. The VR platform will provide a safe and interactive training environment, enhancing communication skills and clinical decision-making.
 
 ## Pointers
-Unreal VR plugin:  https://humancodeable.com/
-Paper:https://www.annemergmed.com/article/S0196-0644(18)31560-9/fulltext
+- Unreal VR plugin:  https://humancodeable.com/
+- Paper:https://www.annemergmed.com/article/S0196-0644(18)31560-9/fulltext
