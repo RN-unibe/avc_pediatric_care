@@ -6,10 +6,11 @@
 
 class USkeletalMeshComponent;
 class UBoxComponent;
-class UAnimationAsset; 
+class UPatientAnimInstance;
 
 UCLASS()
-class CPP_VR2_API APatient : public AActor {
+class CPP_VR2_API APatient : public AActor
+{
     GENERATED_BODY()
 
 public:
@@ -27,19 +28,34 @@ protected:
     void OnHandOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
         UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-    void PlayTouchAnimation();
-    void PlayIdleAnimation();
+public:
+    // Call these from your grab logic later
+    UFUNCTION(BlueprintCallable, Category = "Patient")
+    void SetHeld(bool bHeld);
+
+private:
+    // Smoothly change TouchAlpha over 'Duration' seconds
+    void SetTouchTarget(float NewTarget, float Duration = 0.6f);
+    void TickTouchLerp(); // timer callback
 
 private:
     UPROPERTY(VisibleAnywhere)
-    USkeletalMeshComponent* Mesh;
+    USkeletalMeshComponent* Mesh = nullptr;
 
     UPROPERTY(VisibleAnywhere)
-    UBoxComponent* TriggerVolume;
+    UBoxComponent* TriggerVolume = nullptr;
 
-    UPROPERTY(EditAnywhere, Category = "Animation")
-    UAnimationAsset* TouchAnimation = nullptr;
+    // Runtime anim instance (owned by SkeletalMesh)
+    UPROPERTY(Transient)
+    UPatientAnimInstance* PatientAnim = nullptr;
 
-    UPROPERTY(EditAnywhere, Category = "Animation")
-    UAnimationAsset* IdleAnimation = nullptr;
+    // Lerp state
+    float TouchAlphaCurrent = 0.f;
+    float TouchAlphaTarget = 0.f;
+
+    FTimerHandle TouchTimer;
+
+    // Config
+    UPROPERTY(EditAnywhere, Category = "Patient|Timing")
+    float TouchBlendDuration = 0.6f; // seconds
 };
