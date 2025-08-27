@@ -36,7 +36,7 @@ public:
 private:
     // Smoothly change TouchAlpha over 'Duration' seconds
     void SetTouchTarget(float NewTarget, float Duration = 0.6f);
-    void TickTouchLerp(); // timer callback
+    void TickTouch(); // timer callback
 
 private:
     UPROPERTY(VisibleAnywhere)
@@ -49,13 +49,11 @@ private:
     UPROPERTY(Transient)
     UPatientAnimInstance* PatientAnim = nullptr;
 
-    // Lerp state
     float TouchAlphaCurrent = 0.f;
     float TouchAlphaTarget = 0.f;
 
     FTimerHandle TouchTimer;
 
-    // Config
     UPROPERTY(EditAnywhere, Category = "Patient|Timing")
     float TouchBlendDuration = 0.6f; // seconds
 };

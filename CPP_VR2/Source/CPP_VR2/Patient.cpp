@@ -6,8 +6,7 @@
 #include "Animation/AnimInstance.h"
 #include "Animation/AnimTypes.h" // EAnimationMode
 
-APatient::APatient()
-{
+APatient::APatient() {
     PrimaryActorTick.bCanEverTick = false;
 
     Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMesh"));
@@ -20,8 +19,7 @@ APatient::APatient()
     TriggerVolume->SetGenerateOverlapEvents(true);
 }
 
-void APatient::BeginPlay()
-{
+void APatient::BeginPlay() {
     Super::BeginPlay();
 
     // Make sure the mesh uses an AnimBlueprint (we’ll assign it in the editor)
@@ -29,13 +27,11 @@ void APatient::BeginPlay()
 
     // Cache our custom anim instance (will be valid after BeginPlay if ABP is set)
     PatientAnim = Cast<UPatientAnimInstance>(Mesh->GetAnimInstance());
-    if (!PatientAnim)
-    {
+    if (!PatientAnim) {
         UE_LOG(LogTemp, Warning, TEXT("APatient: AnimInstance is not UPatientAnimInstance. Did you assign the ABP?"));
     }
 
-    if (TriggerVolume)
-    {
+    if (TriggerVolume) {
         TriggerVolume->OnComponentBeginOverlap.AddDynamic(this, &APatient::OnHandOverlapBegin);
         TriggerVolume->OnComponentEndOverlap.AddDynamic(this, &APatient::OnHandOverlapEnd);
     }
@@ -48,79 +44,75 @@ void APatient::BeginPlay()
 
 void APatient::OnHandOverlapBegin(UPrimitiveComponent*, AActor* OtherActor,
     UPrimitiveComponent* OtherComp, int32,
-    bool, const FHitResult&)
-{
+    bool, const FHitResult&) {
+
     const bool IsHandActor = (OtherActor && OtherActor->ActorHasTag(TEXT("PlayerHand")));
     const bool IsHandComp = (OtherComp && OtherComp->ComponentHasTag(TEXT("PlayerHand")));
-    if (IsHandActor || IsHandComp)
-    {
+
+    if (IsHandActor || IsHandComp) {
         SetTouchTarget(1.f, TouchBlendDuration); // ease in to "react"
     }
 }
 
 void APatient::OnHandOverlapEnd(UPrimitiveComponent*, AActor* OtherActor,
-    UPrimitiveComponent* OtherComp, int32)
-{
+    UPrimitiveComponent* OtherComp, int32) {
+
     const bool IsHandActor = (OtherActor && OtherActor->ActorHasTag(TEXT("PlayerHand")));
     const bool IsHandComp = (OtherComp && OtherComp->ComponentHasTag(TEXT("PlayerHand")));
-    if (IsHandActor || IsHandComp)
-    {
+
+    if (IsHandActor || IsHandComp) {
         SetTouchTarget(0.f, TouchBlendDuration); // ease out to idle
     }
 }
 
-void APatient::SetHeld(bool bHeld)
-{
-    if (PatientAnim)
-    {
+void APatient::SetHeld(bool bHeld) {
+    if (PatientAnim) {
         PatientAnim->bIsHeld = bHeld;
     }
 }
 
-void APatient::SetTouchTarget(float NewTarget, float Duration)
-{
-    TouchAlphaTarget = FMath::Clamp(NewTarget, 0.f, 1.f);
+void APatient::SetTouchTarget(float NewTarget, float Duration) {
+    TouchAlphaTarget = FMath::Clamp(NewTarget, 0.f, 10.f);
 
-    if (!PatientAnim)
-    {
+    if (!PatientAnim) {
         // Try to recache if something changed at runtime
         PatientAnim = Cast<UPatientAnimInstance>(Mesh ? Mesh->GetAnimInstance() : nullptr);
         if (!PatientAnim) return;
     }
 
     // If duration is tiny, snap
-    if (Duration <= KINDA_SMALL_NUMBER)
-    {
+    if (Duration <= KINDA_SMALL_NUMBER) {
         TouchAlphaCurrent = TouchAlphaTarget;
         PatientAnim->TouchAlpha = TouchAlphaCurrent;
+
         GetWorldTimerManager().ClearTimer(TouchTimer);
+
         return;
     }
 
     // Start a small timer to interpolate smoothly
     GetWorldTimerManager().ClearTimer(TouchTimer);
     const float Step = 0.02f; // 50 Hz
-    GetWorldTimerManager().SetTimer(TouchTimer, this, &APatient::TickTouchLerp, Step, true);
+    GetWorldTimerManager().SetTimer(TouchTimer, this, &APatient::TickTouch, Step, true);
 }
 
-void APatient::TickTouchLerp()
-{
-    if (!PatientAnim)
-    {
+void APatient::TickTouch() {
+    if (!PatientAnim) {
         GetWorldTimerManager().ClearTimer(TouchTimer);
+
         return;
     }
 
     // Move current toward target with a fixed rate (approximate duration)
     const float Step = 0.02f;        // timer tick
     const float Rate = 1.f / FMath::Max(SMALL_NUMBER, TouchBlendDuration);
+
     TouchAlphaCurrent = FMath::FInterpConstantTo(TouchAlphaCurrent, TouchAlphaTarget, Step, Rate);
 
     PatientAnim->TouchAlpha = TouchAlphaCurrent;
 
     // Stop when close enough
-    if (FMath::IsNearlyEqual(TouchAlphaCurrent, TouchAlphaTarget, 0.005f))
-    {
+    if (FMath::IsNearlyEqual(TouchAlphaCurrent, TouchAlphaTarget, 0.005f)) {
         TouchAlphaCurrent = TouchAlphaTarget;
         PatientAnim->TouchAlpha = TouchAlphaCurrent;
         GetWorldTimerManager().ClearTimer(TouchTimer);
