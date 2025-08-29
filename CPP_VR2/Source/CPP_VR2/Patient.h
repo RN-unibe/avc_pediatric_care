@@ -16,6 +16,21 @@ class CPP_VR2_API APatient : public AActor
 public:
     APatient();
 
+
+	// Call these from your grab logic later
+    UFUNCTION(BlueprintCallable, Category = "Patient")
+    void SetHeld(bool bHeld);
+
+    // Grab Logic
+    UFUNCTION(BlueprintCallable, Category = "Patient")
+    void Grab(USceneComponent* AttachParent, FName SocketName = NAME_None);
+
+    UFUNCTION(BlueprintCallable, Category = "Patient")
+    void Release(FVector LinearVelocity = FVector::ZeroVector,
+        FVector AngularVelocityDeg = FVector::ZeroVector);
+
+
+
 protected:
     virtual void BeginPlay() override;
 
@@ -28,17 +43,11 @@ protected:
     void OnHandOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
         UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-public:
-    // Call these from your grab logic later
-    UFUNCTION(BlueprintCallable, Category = "Patient")
-    void SetHeld(bool bHeld);
-
 private:
     // Smoothly change TouchAlpha over 'Duration' seconds
     void SetTouchTarget(float NewTarget, float Duration = 0.6f);
     void TickTouch(); // timer callback
 
-private:
     UPROPERTY(VisibleAnywhere)
     USkeletalMeshComponent* Mesh = nullptr;
 

@@ -50,7 +50,7 @@ void APatient::OnHandOverlapBegin(UPrimitiveComponent*, AActor* OtherActor,
     const bool IsHandComp = (OtherComp && OtherComp->ComponentHasTag(TEXT("PlayerHand")));
 
     if (IsHandActor || IsHandComp) {
-        SetTouchTarget(1.f, TouchBlendDuration); // ease in to "react"
+        SetTouchTarget(10.f, TouchBlendDuration); // ease in to "react"
     }
 }
 
@@ -118,3 +118,39 @@ void APatient::TickTouch() {
         GetWorldTimerManager().ClearTimer(TouchTimer);
     }
 }
+
+void APatient::Grab(USceneComponent* AttachParent, FName SocketName)
+{
+    if (!AttachParent || !Mesh) return;
+
+    // Stop any ragdoll/physics while carried
+    Mesh->SetSimulatePhysics(false);
+    Mesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly); // no blocking while carried
+    Mesh->SetCollisionResponseToAllChannels(ECR_Ignore);      // optional: prevent bumps while carried
+    Mesh->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block); // keep traces if you like
+
+    // Attach to the player's hand/controller
+    FAttachmentTransformRules Rules(FAttachmentTransformRules::KeepWorldTransform);
+    Mesh->AttachToComponent(AttachParent, Rules, SocketName);
+
+    // Drive animation pose
+    SetHeld(true); // sets AnimInstance->bIsHeld = true
+}
+
+void APatient::Release(FVector LinearVelocity, FVector AngularVelocityDeg)
+{
+    if (!Mesh) return;
+
+    Mesh->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+    Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    Mesh->SetCollisionResponseToAllChannels(ECR_Block);
+
+    Mesh->SetSimulatePhysics(false);
+    Mesh->SetPhysicsLinearVelocity(LinearVelocity);
+
+    const FVector AngularRad = FMath::DegreesToRadians(AngularVelocityDeg);
+    Mesh->SetPhysicsAngularVelocityInRadians(AngularRad);
+
+    SetHeld(false);
+}
+

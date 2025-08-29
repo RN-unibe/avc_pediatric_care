@@ -9,7 +9,7 @@ class CPP_VR2_API UPatientAnimInstance : public UAnimInstance
     GENERATED_BODY()
 
 public:
-    // 0.0 = fully Idle, 1.0 = fully React (touched)
+    // 0.0 = fully Idle, 10.0 = fully React (touched)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Patient")
     float TouchAlpha = 0.0f;
 
