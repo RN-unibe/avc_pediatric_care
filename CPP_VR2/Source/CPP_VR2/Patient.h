@@ -6,14 +6,29 @@
 
 class USkeletalMeshComponent;
 class UBoxComponent;
-class UAnimationAsset; 
+class UPatientAnimInstance;
+class USceneComponent;
 
 UCLASS()
-class CPP_VR2_API APatient : public AActor {
+class CPP_VR2_API APatient : public AActor
+{
     GENERATED_BODY()
 
 public:
     APatient();
+
+    UFUNCTION(BlueprintCallable, Category = "Patient")
+    void SetHeld(bool bHeld);
+
+    UFUNCTION(BlueprintCallable, Category = "Patient|Return")
+    void SnapBackToHome();
+
+    UPROPERTY(EditAnywhere, Category = "Patient|Return")
+    bool bSnapOnRelease = true;
+
+    UPROPERTY(EditAnywhere, Category = "Patient|Return")
+    bool bEnableGravityWhenNotSnapping = true;
+
 
 protected:
     virtual void BeginPlay() override;
@@ -27,19 +42,27 @@ protected:
     void OnHandOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
         UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-    void PlayTouchAnimation();
-    void PlayIdleAnimation();
-
 private:
-    UPROPERTY(VisibleAnywhere)
-    USkeletalMeshComponent* Mesh;
+    void SetTouchTarget(float NewTarget, float Duration = 0.6f);
+    void TickTouch();
+    void Tick(float DeltaSeconds) override;
 
     UPROPERTY(VisibleAnywhere)
-    UBoxComponent* TriggerVolume;
+    USkeletalMeshComponent* Mesh = nullptr;
 
-    UPROPERTY(EditAnywhere, Category = "Animation")
-    UAnimationAsset* TouchAnimation = nullptr;
+    UPROPERTY(VisibleAnywhere)
+    UBoxComponent* TriggerVolume = nullptr;
 
-    UPROPERTY(EditAnywhere, Category = "Animation")
-    UAnimationAsset* IdleAnimation = nullptr;
+    UPROPERTY(Transient)
+    UPatientAnimInstance* PatientAnim = nullptr;
+
+    float TouchAlphaCurrent = 0.f;
+    float TouchAlphaTarget = 0.f;
+    FTimerHandle TouchTimer;
+
+    UPROPERTY(EditAnywhere, Category = "Patient|Timing")
+    float TouchBlendDuration = 0.6f;
+
+    FTransform InitialActorTransform;
+
 };

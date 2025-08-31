@@ -2,6 +2,8 @@ Binaries/
 DerivedDataCache/
 Intermediate/
 Saved/
+Windows/
+
 
 *.suo
 *.user
@@ -24,3 +26,10 @@ Saved/
 *.tmp
 
 Build/
+Content/Paks
+CPP_VR2/Windows/CPP_VR2/Content/Paks/CPP_VR2-Windows.ucas
+
+
+# Packaged builds
+CPP_VR2/Windows/
+CPP_VR2/Content/Paks/
