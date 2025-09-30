@@ -6,14 +6,8 @@ Managing distressed patients in clinical environments is a challenging yet criti
 ## Motivation
 A VR solution featuring animated patient avatars with dynamic behavior can provide a realistic, hands-on training experience. By engaging with these avatars in a safe, repeatable, and immersive environment, healthcare professionals can practice effective communication and calming techniques. This project integrates AI-driven behavior trees and high-quality animations to simulate real-world scenarios, fostering empathy and improving preparedness for emotionally charged situations.
 
-
-## Demonstration
-This project serves as a proof-of-concept for a training environment for pediatricians to manage a frightened patient.
-
-
-<video controls>
-  <source src="https://github.com/RN-unibe/avc_pediatric_care/blob/main/demonstration.mp4" type="video/mp4">
-</video>
+## About
+This project serves as a proof-of-concept for a training environment for pediatricians to manage a frightened patient. See "demonstration.mp4" for a quick demonstration.
 
 ## Keywords
 - VR
