@@ -12,7 +12,7 @@ This project serves as a proof-of-concept for a training environment for pediatr
 
 
 <video controls>
-  <source src="https://github.com/RN-unibe/avc_pediatric_care/edit/main/demonstration.mp4" type="video/mp4">
+  <source src="https://github.com/RN-unibe/avc_pediatric_care/blob/main/demonstration.mp4" type="video/mp4">
 </video>
 
 ## Keywords
